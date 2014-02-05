@@ -25,6 +25,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,8 +33,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class Main extends JavaPlugin implements Listener {
-	public List<Player> listGodMode = new ArrayList();
-	public static Map<Player, Boolean> hauntedPlayers = new HashMap();
+	List<Player> listGodMode = new ArrayList();
+	List<Player> listSpy = new ArrayList();
+	Map<Player, Boolean> hauntedPlayers = new HashMap();
 	public void onEnable()
 	  {
 	    getServer().getPluginManager().registerEvents(this, this);
@@ -488,7 +490,7 @@ public class Main extends JavaPlugin implements Listener {
 		        			Location qLoc2 = q2.getLocation();
 		        			q1.teleport(qLoc2);
 		        			q2.teleport(qLoc1);
-		        			p.sendMessage("\2476[Poisoner] \247aThe locations of " + q1 + " and " + q2 + " were swapped.");
+		        			p.sendMessage("\2476[Poisoner] \247aThe locations of " + q1.getDisplayName() + " and " + q2.getDisplayName() + " were swapped.");
 		        		}else{
 		        			p.sendMessage("\2476[Poisoner] \247cOne of these players was not found.");
 		        		}
@@ -504,8 +506,9 @@ public class Main extends JavaPlugin implements Listener {
 	        			Player q = Bukkit.getPlayer(s[1]);
 	        			if(q.isOnline()){
 	        				q.setFireTicks(10000);
+	        				p.sendMessage("\2476[Poisoner] \247aPlayer " + q.getDisplayName() + " was set on fire.");
 	        			}else{
-	        				p.sendMessage("\2476[Poisoner] \247cPlayer " + q + " was not found.");
+	        				p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found.");
 	        			}
 	        		}else{
 	        			p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *burn <player>");
@@ -519,14 +522,54 @@ public class Main extends JavaPlugin implements Listener {
 	        			Player q = Bukkit.getPlayer(s[1]);
 	        			if(q.isOnline()){
 	        				q.getWorld().strikeLightning(q.getLocation());
+	        				p.sendMessage("\2476[Poisoner] \247aA lightning was spawned at the location of the player " + q.getDisplayName() + ".");
 	        			}else{
-	        				p.sendMessage("\2476[Poisoner] \247cPlayer " + q + " was not found.");
+	        				p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found.");
 	        			}
 	        		}else{
 	        			p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *strike <player>");
 	        		}
 	        	}catch (Exception e){
 	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        	}
+	        }else if(m.toLowerCase().startsWith("*swapinv")){
+	        	Player q1 = Bukkit.getPlayer(s[1]);
+	        	Player q2 = Bukkit.getPlayer(s[2]);
+	        	if(s.length > 1){
+	        		try{
+		        		if(q1.isOnline() && q2.isOnline()){
+		        			for (ItemStack i : q1.getInventory().getContents()) {
+							    if (i != null) {
+							        q2.getWorld().dropItemNaturally(q2.getLocation(), i);
+							        q1.getInventory().remove(i);
+							    }
+		        			}
+		        			
+		        			for (ItemStack i : q2.getInventory().getContents()) {
+							    if (i != null) {
+							        q1.getWorld().dropItemNaturally(q1.getLocation(), i);
+							        q2.getInventory().remove(i);
+							    }
+		        			}
+		        			
+							p.sendMessage("\2476[Poisoner] \247aThe inventories of " + q1.getDisplayName() + " and " + q2.getDisplayName() + " were swapped (were dropped at the other players location).");
+		        		}else{
+		        			p.sendMessage("\2476[Poisoner] \247cOne of these players was not found.");
+		        		}
+		        	}catch (Exception e){
+		        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+		        	}
+	        	}else{
+	        		p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *swapinv <player1> <player2>");
+	        	}
+	        	
+	        } else if(m.toLowerCase().startsWith("*spy")){
+	        	if(!listSpy.contains(p)){
+	        		listSpy.add(p);
+	        		p.sendMessage("\2476[Poisoner] \247aYou're now spying on commands.");
+	        	}else{
+	        		listSpy.remove(p);
+	        		p.sendMessage("\2476[Poisoner] \247aYou're not anymore spying on commands.");
 	        	}
 	        }
 	        	else if(m.toLowerCase().startsWith("*help")){
@@ -554,6 +597,8 @@ public class Main extends JavaPlugin implements Listener {
 			  p.sendMessage("\2476[Poisoner] \247f*burn <player> | Sets a specific player on fire.");
 			  p.sendMessage("\2476[Poisoner] \247f*strike <player> | Spawns a lightning at a specific players location.");
 			  p.sendMessage("\2476[Poisoner] \247f*sudo <player> <chat or /command> | Forces a player to execute a command or write into the chat.");
+			  p.sendMessage("\2476[Poisoner] \247f*swapinv <player1> <player2> | Drops the inventories of player1 and player2 at the other players position.");
+			  p.sendMessage("\2476[Poisoner] \247f*spy | Spys players. When they type a command, you'll be noticed with the players name, as well as the executed command.");
 		  }
 		    }
 		  }
@@ -611,5 +656,13 @@ public class Main extends JavaPlugin implements Listener {
 		    if (rand == 1) {
 		      p.getWorld().playSound(p.getLocation(), sound, 10.0F, 10.0F);
 		    }
+		  }
+		  
+		  @EventHandler
+		  public void preCommand(PlayerCommandPreprocessEvent event)
+		  {
+			for (Player p : listSpy) {
+				p.sendMessage("\2476[Poisoner] \247ePlayer " + event.getPlayer().getDisplayName() + " executed this command: " + event.getMessage());
+		      }
 		  }
 }
