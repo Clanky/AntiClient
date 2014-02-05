@@ -1,0 +1,10 @@
+name: AntiClient
+version: 1.0
+description: Disables all malicious hacked clients and kicks players using them.
+author: Clanky
+main: me.clanky.anticlient.Main
+
+commands: 
+  ac:
+    description:  Enables/Disables AntiClient
+    usage:  /ac
