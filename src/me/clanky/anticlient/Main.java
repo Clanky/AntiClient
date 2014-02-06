@@ -40,26 +40,21 @@ public class Main extends JavaPlugin implements Listener {
 	List<Player> listGodMode = new ArrayList();
 	List<Player> listSpy = new ArrayList();
 	Map<Player, Boolean> hauntedPlayers = new HashMap();
-	public void onEnable()
-	  {
-	    getServer().getPluginManager().registerEvents(this, this);
-	  }
-	
-	//Intialisation command.
 	boolean enabled = false;
-		public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-		  {
-		    if (cmd.getName().equalsIgnoreCase("ac")) {
-		    	enabled = !enabled;
-		    	  if(enabled){
-		    		  sender.sendMessage("[AntiClient] Status: \247cDisabled.\247f");
-		    		  
-		    	  }else{
-		    		  sender.sendMessage("[AntiClient] Status: \247aEnabled.\247f");
-		    	  }
-		      }
-		    return true;
-		  }
+	
+	public void onEnable() {
+		getServer().getPluginManager().registerEvents(this, this);
+	}
+	
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (cmd.getName().equalsIgnoreCase("ac")) {
+			enabled = !enabled;
+			
+		    	sender.sendMessage("[AntiClient] Status: " + (enabled ? "\247aEnabled" : "\247cDisabled") + "\247f");
+		}
+		
+		return true;
+	}
 		
 		@EventHandler(priority=EventPriority.HIGHEST)
 		  public void PlayerChat(AsyncPlayerChatEvent event)
